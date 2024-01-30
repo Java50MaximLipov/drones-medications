@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@ToString
 public class DroneModel {
 
 	@Id

@@ -10,11 +10,7 @@ import telran.drones.service.DronesService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,21 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-@SpringBootTest(properties = { PropertiesNames.PERIODIC_UNIT_MILLIS + "=1000000" })
+@SpringBootTest
 @Sql(scripts = "classpath:test_data.sql")
-//('Drone-1', 'Middleweight', 300, 100, 'IDLE'),
-//('Drone-2', 'Middleweight', 300, 20, 'IDLE'),
-//('Drone-3', 'Middleweight', 300, 100, 'LOADING');
-//('MED_1', 'Medication-1', 200),
-//('MED_2', 'Medication-2', 350)	
+
 class DronesServiceTest {
 	private static final String DRONE1 = "Drone-1";
-	private static final String DRONE2 = "Drone-2";
 	private static final String MED1 = "MED_1";
 	private static final String DRONE3 = "Drone-3";
 	private static final String SERVICE_TEST = "Service: ";
 	private static final String DRONE4 = "Drone-4";
-	private static final String MED2 = "MED_2";
 
 	@Autowired
 	DronesService dronesService;
@@ -63,7 +53,9 @@ class DronesServiceTest {
 		String medicationCode = loadingLog.getMedicationCode();
 		assertEquals(DRONE1, droneNumber);
 		assertEquals(State.LOADING, state);
-		assertEquals(MED1, loadingLog.getMedicationCode());
+		assertEquals(MED1, medicationCode);
+		Drone drone = droneRepo.findById(DRONE1).orElseThrow();
+		assertEquals(State.LOADING, drone.getState());
 	}
 
 	@Test
@@ -91,7 +83,7 @@ class DronesServiceTest {
 	@DisplayName(SERVICE_TEST + TestDisplayNames.REGISTER_DRONE_NORMAL)
 	void registerDroneNormal() {
 		assertEquals(droneDto, dronesService.registerDrone(droneDto));
-		assertNotNull(droneRepo.findById(DRONE4).orElse(null));
+		assertTrue(droneRepo.existsById(DRONE4));
 	}
 
 	@Test

@@ -10,6 +10,7 @@ import telran.drones.dto.State;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@ToString
 public class Drone {
 
 	@Id

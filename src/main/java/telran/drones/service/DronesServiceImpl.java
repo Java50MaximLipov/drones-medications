@@ -32,9 +32,6 @@ public class DronesServiceImpl implements DronesService {
 	@Value("${" + PropertiesNames.CAPACITY_THRESHOLD + ":25}")
 	int capacityThreshold;
 
-	@Value("${" + PropertiesNames.CAPACITY_DELTA_TIME_UNIT + ":2}")
-	private int capacityDeltaPerTimeUnit;
-
 	@Override
 	@Transactional
 	public DroneDto registerDrone(DroneDto droneDto) {
@@ -43,10 +40,10 @@ public class DronesServiceImpl implements DronesService {
 			throw new DroneAlreadyExistException();
 		}
 		Drone drone = Drone.of(droneDto);
-		log.debug("drone object is {}", drone);
 		DroneModel droneModel = droneModelRepo.findById(droneDto.modelType())
 				.orElseThrow(() -> new ModelNotFoundException());
 		drone.setModel(droneModel);
+		log.debug("drone object is {}", drone);
 		droneRepo.save(drone);
 		return droneDto;
 	}
@@ -80,6 +77,30 @@ public class DronesServiceImpl implements DronesService {
 		logRepo.save(eventLog);
 		log.debug("saved log: {}", eventLog);
 		return droneMedication;
+	}
+
+	@Override
+	public List<String> checkMedicationItems(String droneNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> checkAvailableDrones() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int checkBatteryCapacity(String droneNumber) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public DroneItemsAmount checkDroneLoadedItemAmounts() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
