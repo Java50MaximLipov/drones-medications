@@ -32,19 +32,23 @@ record DroneDtoWrongEnum(String number, String modelType) {
 
 @WebMvcTest
 class DronesControllerTest {
+
 	@Autowired
 	MockMvc mockMvc;
+
 	@MockBean
 	DronesService dronesService;
+
 	@Autowired
 	ObjectMapper mapper;
+
 	private static final String HOST = "http://localhost:8080/";
 	private static final String DRONE_NUMBER_1 = "DRONE-1";
 	private static final String MEDICATION_CODE = "MED_1";
 	static final String URL_DRONE_REGISTER = HOST + UrlConstants.DRONES;
 	private static final String URL_DRONE_LOAD = HOST + UrlConstants.LOAD_DRONE;
 	DroneDto droneDto1 = new DroneDto(DRONE_NUMBER_1, ModelType.Cruiserweight);
-	DroneDtoWrongEnum droneDtoWrongFields = new DroneDtoWrongEnum(new String(new char[1000]), "KUKU");
+	DroneDtoWrongEnum droneDtoWrongFields = new DroneDtoWrongEnum(DRONE_NUMBER_1, "KUKU");
 	DroneDto droneDtoMissingFields = new DroneDto(null, null);
 	DroneMedication droneMedication = new DroneMedication(DRONE_NUMBER_1, MEDICATION_CODE);
 	DroneMedication droneMedicationWrongFields = new DroneMedication(new String(new char[1000]), "mED_1");
@@ -122,7 +126,6 @@ class DronesControllerTest {
 	@DisplayName("Controller:" + TestDisplayNames.LOAD_DRONE_MEDICATION_NOT_FOUND)
 	void loadMedicationMedicationNotFound() throws Exception {
 		serviceExceptionRequest(new MedicationNotFoundException(), 404, ServiceExceptionMessages.MEDICATION_NOT_FOUND);
-
 	}
 
 	@Test
