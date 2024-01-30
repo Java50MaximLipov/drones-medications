@@ -9,19 +9,23 @@ import telran.drones.dto.State;
 @Table(name = "drones")
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class Drone {
+
 	@Id
 	@Column(length = 100, name = "drone_number")
 	String number;
 
 	@ManyToOne
 	@JoinColumn(name = "model_name")
+	@Setter
 	DroneModel model;
 
 	@Column(name = "battery_capacity")
 	int batteryCapacity;
 
 	@Enumerated(EnumType.STRING)
+	@Setter
 	State state;
 
 	static public Drone of(DroneDto droneDto) {
