@@ -225,7 +225,6 @@ class DronesControllerTest {
 	void checkBatteryCapacityNotFound() throws Exception {
 		when(dronesService.checkBatteryCapacity(DRONE_NUMBER_1)).thenThrow(new DroneNotFoundException());
 		mockMvc.perform(get(URL_BATTERY_CAPACITY)).andExpect(status().isNotFound());
-
 	}
 
 	@Test

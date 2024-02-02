@@ -19,9 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-
 @SpringBootTest
 @Sql(scripts = "classpath:test_data.sql")
 
@@ -138,14 +135,16 @@ class DronesServiceTest {
 	}
 
 	@Test
+	@Sql(scripts = "classpath:test_idle.data.sql")
 	@DisplayName(SERVICE_TEST + TestDisplayNames.CHECK_DRONES_ITEMS_AMOUNT)
 	void checkDroneLoadedItemAmounts() {
 		dronesService.loadDrone(droneMedication1);
+		dronesService.loadDrone(droneMedication2);
 		Map<String, Long> resultMap = dronesService.checkDroneLoadedItemAmounts().stream()
 				.collect(Collectors.toMap(da -> da.getNumber(), da -> da.getAmount()));
 		assertEquals(3, resultMap.size());
 		assertEquals(1, resultMap.get(DRONE1));
-		assertEquals(0, resultMap.get(DRONE2));
+		assertEquals(1, resultMap.get(DRONE2));
 		assertEquals(0, resultMap.get(DRONE3));
 	}
 
