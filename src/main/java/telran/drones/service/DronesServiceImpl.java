@@ -30,6 +30,7 @@ public class DronesServiceImpl implements DronesService {
 	final MedicationRepo medicationRepo;
 	final EventLogRepo logRepo;
 	final DronesModelRepo droneModelRepo;
+	final Map<State, State> statesMachine;
 
 	@Value("${" + PropertiesNames.CAPACITY_THRESHOLD + ":25}")
 	int capacityThreshold;
