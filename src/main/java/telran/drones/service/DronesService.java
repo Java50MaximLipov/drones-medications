@@ -63,6 +63,6 @@ public interface DronesService {
 	 * 
 	 * @return distribution projection
 	 */
-	DroneItemsAmount checkDroneLoadedItemAmounts();
+	List<DroneItemsAmount> checkDroneLoadedItemAmounts();
 
 }

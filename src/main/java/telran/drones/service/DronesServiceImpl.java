@@ -28,7 +28,6 @@ public class DronesServiceImpl implements DronesService {
 	final MedicationRepo medicationRepo;
 	final EventLogRepo logRepo;
 	final DronesModelRepo droneModelRepo;
-
 	@Value("${" + PropertiesNames.CAPACITY_THRESHOLD + ":25}")
 	int capacityThreshold;
 
@@ -81,7 +80,6 @@ public class DronesServiceImpl implements DronesService {
 
 	@Override
 	public List<String> checkMedicationItems(String droneNumber) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -98,7 +96,7 @@ public class DronesServiceImpl implements DronesService {
 	}
 
 	@Override
-	public DroneItemsAmount checkDroneLoadedItemAmounts() {
+	public List<DroneItemsAmount> checkDroneLoadedItemAmounts() {
 		// TODO Auto-generated method stub
 		return null;
 	}
