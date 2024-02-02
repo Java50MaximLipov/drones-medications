@@ -9,7 +9,7 @@ import telran.drones.dto.State;
 
 @Configuration
 public class DronesConfiguration {
-
+	// Matrix of states machine
 	@SuppressWarnings("serial")
 	@Bean
 	Map<State, State> getStatesMachine() {
