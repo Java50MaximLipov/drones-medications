@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import telran.drones.dto.EventLogDto;
 import telran.drones.dto.State;
 
 @Entity
@@ -22,7 +23,7 @@ public class EventLog {
 	@Temporal(TemporalType.TIMESTAMP)
 	LocalDateTime timestamp;
 
-	@Column(name = "drone_number")
+	@Column(name = "drone_number", nullable = false)
 	String droneNumber;
 
 	@Column(name = "medication_code")
@@ -41,6 +42,10 @@ public class EventLog {
 		this.state = state;
 		this.batteryCapacity = batteryCapacity;
 		this.medicationCode = medicationCode;
+	}
+
+	public EventLogDto build() {
+		return new EventLogDto(timestamp, droneNumber, medicationCode, state, batteryCapacity);
 	}
 
 }

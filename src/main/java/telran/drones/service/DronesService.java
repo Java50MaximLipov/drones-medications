@@ -5,6 +5,7 @@ import java.util.List;
 import telran.drones.dto.DroneDto;
 import telran.drones.dto.DroneItemsAmount;
 import telran.drones.dto.DroneMedication;
+import telran.drones.dto.EventLogDto;
 
 public interface DronesService {
 	/**
@@ -64,5 +65,13 @@ public interface DronesService {
 	 * @return distribution projection
 	 */
 	List<DroneItemsAmount> checkDroneLoadedItemAmounts();
+
+	/******************************************************************/
+	/**
+	 * 
+	 * @param droneNumber
+	 * @return data about all logs of the drone with a given number
+	 */
+	List<EventLogDto> checkHistoryLogs(String droneNumber);
 
 }

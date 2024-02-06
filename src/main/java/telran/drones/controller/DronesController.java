@@ -53,4 +53,10 @@ public class DronesController {
 		return dronesService.checkDroneLoadedItemAmounts();
 	}
 
+	@GetMapping(UrlConstants.DRONE_HISTORY_LOGS + "{" + UrlConstants.DRONE_NUMBER + "}")
+	List<EventLogDto> checkHistoryLogs(@PathVariable(UrlConstants.DRONE_NUMBER) String droneNumber) {
+		log.debug("checkHistoryLogs controller for drone {}", droneNumber);
+		return dronesService.checkHistoryLogs(droneNumber);
+	}
+
 }

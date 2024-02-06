@@ -24,6 +24,7 @@ import telran.drones.repo.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@EnableScheduling
 @Transactional(readOnly = true)
 public class DronesServiceImpl implements DronesService {
 	final DronesRepo droneRepo;
@@ -34,6 +35,9 @@ public class DronesServiceImpl implements DronesService {
 
 	@Value("${" + PropertiesNames.CAPACITY_THRESHOLD + ":25}")
 	int capacityThreshold;
+
+	@Value("${" + PropertiesNames.CAPACITY_DELTA_TIME_UNIT + ":2}")
+	private int capacityDeltaPerTimeUnit;
 
 	@Override
 	@Transactional(readOnly = false)
@@ -115,6 +119,61 @@ public class DronesServiceImpl implements DronesService {
 		List<DroneItemsAmount> res = logRepo.getItemAmounts();
 		res.forEach(dia -> log.trace("drone {}, items amount {}", dia.getNumber(), dia.getAmount()));
 		return res;
+	}
+
+	@Scheduled(fixedDelayString = "${" + PropertiesNames.PERIODIC_UNIT_MILLIS + ":5000}")
+	@Transactional
+	void periodicTask() {
+		List<Drone> allDrones = droneRepo.findAll();
+		log.trace("there are {} drones", allDrones.size());
+		allDrones.forEach(this::droneProcessing);
+	}
+
+	private void droneProcessing(Drone drone) {
+		String droneNumber = drone.getNumber();
+		int batteryCapacity = drone.getBatteryCapacity();
+		int capacityDelta = capacityDeltaPerTimeUnit;
+		log.trace("before processing - drone: {}, battery capacity: {}, state: {}", droneNumber, batteryCapacity,
+				drone.getState());
+		if (drone.getState() != State.IDLE) {
+			State nextState = statesMachine.get(drone.getState());
+			drone.setState(nextState);
+			capacityDelta = -capacityDelta;
+		}
+		if ((drone.getState() == State.IDLE && batteryCapacity < 100) || drone.getState() != State.IDLE) {
+			drone.setBatteryCapacity(batteryCapacity + capacityDelta);
+			createNewLog(drone);
+			batteryCapacity = drone.getBatteryCapacity();
+			log.trace("after processing - drone: {}, battery capacity: {}, state: {}", droneNumber, batteryCapacity,
+					drone.getState());
+		}
+	}
+
+	private void createNewLog(Drone drone) {
+		String medicationCode = null;
+		String droneNumber = drone.getNumber();
+		State state = drone.getState();
+		int batteryCapacity = drone.getBatteryCapacity();
+		if (drone.getState() != State.IDLE) {
+			EventLog lastEventLog = logRepo.findFirst1ByDroneNumberOrderByTimestampDesc(droneNumber);
+			if (lastEventLog == null) {
+				log.error(
+						"No event logs are found for drone {}," + " but it means that there is error in states machine",
+						droneNumber);
+			} else {
+				medicationCode = lastEventLog.getMedicationCode();
+			}
+		}
+		EventLog logForSaving = new EventLog(LocalDateTime.now(), droneNumber, state, batteryCapacity, medicationCode);
+		logRepo.save(logForSaving);
+		log.debug("log {} has been saved", logForSaving.build());
+	}
+
+	@Override
+	public List<EventLogDto> checkHistoryLogs(String droneNumber) {
+		List<EventLog> logs = logRepo.findByDroneNumber(droneNumber);
+		log.debug("drone {} has {} logs", droneNumber, logs.size());
+		return logs.stream().map(EventLog::build).toList();
 	}
 
 }

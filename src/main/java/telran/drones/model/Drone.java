@@ -23,6 +23,7 @@ public class Drone {
 	DroneModel model;
 
 	@Column(name = "battery_capacity")
+	@Setter
 	int batteryCapacity;
 
 	@Enumerated(EnumType.STRING)
