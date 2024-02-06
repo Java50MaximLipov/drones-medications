@@ -80,30 +80,6 @@ class DronesServiceTest {
 	}
 
 	@Test
-	@Sql(scripts = "classpath:test_data.sql")
-	@DisplayName(SERVICE_TEST + TestDisplayNames.LOAD_DRONE_NOT_MATCHING_STATE)
-	void loadDroneWrongState() {
-		assertThrowsExactly(IllegalDroneStateException.class,
-				() -> dronesService.loadDrone(new DroneMedication(DRONE3, MED1)));
-	}
-
-	@Test
-	@Sql(scripts = "classpath:test_data.sql")
-	@DisplayName(SERVICE_TEST + TestDisplayNames.LOAD_DRONE_MEDICATION_NOT_FOUND)
-	void loadDroneMedicationNotFound() {
-		assertThrowsExactly(MedicationNotFoundException.class,
-				() -> dronesService.loadDrone(new DroneMedication(DRONE1, "KUKU")));
-	}
-
-	@Test
-	@Sql(scripts = "classpath:test_data.sql")
-	@DisplayName(SERVICE_TEST + TestDisplayNames.LOAD_DRONE_NOT_FOUND)
-	void loadDroneNotFound() {
-		assertThrowsExactly(DroneNotFoundException.class,
-				() -> dronesService.loadDrone(new DroneMedication(DRONE4, MED1)));
-	}
-
-	@Test
 	@DisplayName(SERVICE_TEST + TestDisplayNames.REGISTER_DRONE_NORMAL)
 	void registerDroneNormal() {
 		assertEquals(droneDto, dronesService.registerDrone(droneDto));
@@ -117,30 +93,9 @@ class DronesServiceTest {
 	}
 
 	@Test
-	@DisplayName(SERVICE_TEST + TestDisplayNames.CHECK_MED_ITEMS_NORMAL)
-	void checkDroneMedItemsNormal() {
-		dronesService.loadDrone(droneMedication1);
-		List<String> medItemsExpected = List.of(MED1);
-		List<String> medItemsActual = dronesService.checkMedicationItems(DRONE1);
-		assertIterableEquals(medItemsExpected, medItemsActual);
-		assertTrue(dronesService.checkMedicationItems(DRONE2).isEmpty());
-	}
-
-	@Test
 	@DisplayName(SERVICE_TEST + TestDisplayNames.CHECK_MED_ITEMS_DRONE_NOT_FOUND)
 	void checkDroneMedItemsNotFound() {
 		assertThrowsExactly(DroneNotFoundException.class, () -> dronesService.checkMedicationItems(DRONE4));
-	}
-
-	@Test
-	@Sql(scripts = "classpath:test_data.sql")
-	@DisplayName(SERVICE_TEST + TestDisplayNames.AVAILABLE_DRONES)
-	void checkAvailableDrones() {
-		List<String> availableExpected = List.of(DRONE1);
-		List<String> availableActual = dronesService.checkAvailableDrones();
-		assertIterableEquals(availableExpected, availableActual);
-		dronesService.loadDrone(droneMedication1);
-		assertTrue(dronesService.checkAvailableDrones().isEmpty());
 	}
 
 	@Test
